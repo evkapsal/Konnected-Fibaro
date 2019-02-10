@@ -7,10 +7,15 @@ local port= fibaro:getValue(thisId, "TCPPort");
 fibaro:debug("Port:"..port);
 konnected= Net.FHttp(ipaddr, port);
 fibaro:log('Device: Running');
+fibaro:debug(os.date("%c"))
+fibaro:call(thisId, "setProperty", "ui.dtime.value", os.date("%c"));
+
+--fibaro:debug("Status"..konnected);
 
 
 --Zone1
 zone1response= konnected:GET("/device?pin=1");
+fibaro:sleep(1000);
 local zone1= json.decode(zone1response);
 fibaro:debug(zone1[1].state);
 local zone1state = zone1[1].state;
@@ -26,6 +31,7 @@ end
 
 --Zone2
 zone2response= konnected:GET("/device?pin=2");
+fibaro:sleep(1000);
 local zone2= json.decode(zone2response);
 fibaro:debug(zone2[1].state);
 local zone2state = zone2[1].state;
@@ -40,6 +46,7 @@ end
 
 --Zone3
 zone3response= konnected:GET("/device?pin=5");
+fibaro:sleep(1000);
 local zone3= json.decode(zone3response);
 fibaro:debug(zone3[1].state);
 local zone3state = zone3[1].state;
@@ -54,6 +61,7 @@ end
 
 --Zone4
 zone4response= konnected:GET("/device?pin=6");
+fibaro:sleep(1000);
 local zone4= json.decode(zone4response);
 fibaro:debug(zone4[1].state);
 local zone4state = zone4[1].state;
@@ -68,6 +76,7 @@ end
 
 --Zone5
 zone5response= konnected:GET("/device?pin=7");
+fibaro:sleep(1000);
 local zone5= json.decode(zone5response);
 fibaro:debug(zone5[1].state);
 local zone5state = zone5[1].state;
@@ -82,6 +91,7 @@ end
 
 --Zone6
 zone6response= konnected:GET("/device?pin=9");
+fibaro:sleep(1000);
 local zone6= json.decode(zone6response);
 fibaro:debug(zone6[1].state);
 local zone6state = zone6[1].state;
@@ -93,5 +103,3 @@ elseif zone6state == 1 then
   fibaro:call(thisId, "setProperty", "ui.winId.value","Opened")
   fibaro:debug("Zone 6 WC Window is Opened")
 end
-
-fibaro:sleep(3000);
