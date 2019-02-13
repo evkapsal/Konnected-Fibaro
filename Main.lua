@@ -5,101 +5,126 @@ local ipaddr= fibaro:getValue(thisId,"IPAddress");
 fibaro:debug("IP:"..ipaddr);
 local port= fibaro:getValue(thisId, "TCPPort");
 fibaro:debug("Port:"..port);
-konnected= Net.FHttp(ipaddr, port);
 fibaro:log('Device: Running');
 fibaro:debug(os.date("%c"))
 fibaro:call(thisId, "setProperty", "ui.dtime.value", os.date("%c"));
 
---fibaro:debug("Status"..konnected);
+--ZoneResponse Function
 
+function zoneresponse(ipaddr,port,zonenum)
+  konnected= Net.FHttp(ipaddr, port)
+  reqstr= "/device?pin=" .. zonenum
+  response= konnected:GET(tostring(reqstr))
+  while tostring(response) ~= nil
+  do
+    if (response) then
+      zonestate= json.decode(response)
+      fibaro:debug("Pin:" .. zonenum .. ",State:" .. tostring(zonestate[1].state))
+      return zonestate[1].state
+    else
+      fibaro:debug("No Response from Konnected" .. tostring(response))
+      fibaro:sleep(3000)
+    end
+  end
+end
+	
 
 --Zone1
-zone1response= konnected:GET("/device?pin=1");
-fibaro:sleep(1000);
-local zone1= json.decode(zone1response);
-fibaro:debug(zone1[1].state);
-local zone1state = zone1[1].state;
-
-
-if zone1state == 0 then
-  fibaro:call(thisId, "setProperty", "ui.doorId.value","Closed")
-  fibaro:debug("Zone 1 Door is Closed")
-elseif zone1state == 1 then
-  fibaro:call(thisId, "setProperty", "ui.doorId.value","Opened")
-  fibaro:debug("Zone 1 Door is Opened")
+zone1= zoneresponse(ipaddr,port,1);
+if (zone1 == 0 or zone1 == 1) then 
+  fibaro:debug("Zone Status:"..zone1)
+  local zone1state = zone1
+  if zone1state == 0 then
+    fibaro:call(thisId, "setProperty", "ui.doorId.value","Closed")
+    fibaro:debug("Zone 1 Door is Closed")
+  elseif zone1state == 1 then
+    fibaro:call(thisId, "setProperty", "ui.doorId.value","Opened")
+    fibaro:debug("Zone 1 Door is Opened")
+  end
+else
+  fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone1))
 end
 
---Zone2
-zone2response= konnected:GET("/device?pin=2");
-fibaro:sleep(1000);
-local zone2= json.decode(zone2response);
-fibaro:debug(zone2[1].state);
-local zone2state = zone2[1].state;
 
-if zone2state == 0 then
-  fibaro:call(thisId, "setProperty", "ui.motionId.value","Idle")
-  fibaro:debug("Zone 2 no motion detected")
-elseif zone2state == 1 then
-  fibaro:call(thisId, "setProperty", "ui.motionId.value","Detected")
-  fibaro:debug("Zone 2 motion detected")
+--Zone 2
+zone2= zoneresponse(ipaddr,port,2);
+if (zone2 == 0 or zone2 == 1) then
+  fibaro:debug("Zone Status:"..zone2)
+  local zone2state = zone2
+  if zone2state == 0 then
+    fibaro:call(thisId, "setProperty", "ui.motionId.value","Idle")
+    fibaro:debug("Zone 2 no motion detected")
+  elseif zone2state == 1 then
+    fibaro:call(thisId, "setProperty", "ui.motionId.value","Detected")
+    fibaro:debug("Zone 2 motion detected")
+  end
+
 end
 
 --Zone3
-zone3response= konnected:GET("/device?pin=5");
-fibaro:sleep(1000);
-local zone3= json.decode(zone3response);
-fibaro:debug(zone3[1].state);
-local zone3state = zone3[1].state;
-
-if zone3state == 0 then
-  fibaro:call(thisId, "setProperty", "ui.balconyId.value","Closed")
-  fibaro:debug("Zone 3 Balcony Door is Closed")
-elseif zone3state == 1 then
-  fibaro:call(thisId, "setProperty", "ui.balconyId.value","Opened")
-  fibaro:debug("Zone 3 Balcony Door is Opened")
+zone3= zoneresponse(ipaddr,port,5);
+if (zone3 == 0 or zone3 == 1) then
+  fibaro:debug("Zone Status:"..zone3)
+  local zone3state = zone3
+  if zone3state == 0 then
+    fibaro:call(thisId, "setProperty", "ui.balconyId.value","Closed")
+    fibaro:debug("Zone 3 Balcony Door is Closed")
+  elseif zone3state == 1 then
+    fibaro:call(thisId, "setProperty", "ui.balconyId.value","Opened")
+    fibaro:debug("Zone 3 Balcony Door is Opened")
+  end
+else
+  fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone3))
 end
+
 
 --Zone4
-zone4response= konnected:GET("/device?pin=6");
-fibaro:sleep(1000);
-local zone4= json.decode(zone4response);
-fibaro:debug(zone4[1].state);
-local zone4state = zone4[1].state;
-
-if zone4state == 0 then
-  fibaro:call(thisId, "setProperty", "ui.kitchedId.value","Closed")
-  fibaro:debug("Zone 4 Kitchen Door is Closed")
-elseif zone4state == 1 then
-  fibaro:call(thisId, "setProperty", "ui.kitchedId.value","Opened")
-  fibaro:debug("Zone 4 Kitchen Door is Opened")
+zone4= zoneresponse(ipaddr,port,6);
+if (zone4 == 0 or zone4 == 1) then 
+  fibaro:debug("Zone Status:"..zone4)
+  local zone4state = zone4
+  if zone4state == 0 then
+    fibaro:call(thisId, "setProperty", "ui.kitchedId.value","Closed")
+    fibaro:debug("Zone 4 Kitchen Door is Closed")
+  elseif zone4state == 1 then
+    fibaro:call(thisId, "setProperty", "ui.kitchedId.value","Opened")
+    fibaro:debug("Zone 4 Kitchen Door is Opened")
+  end
+else
+  fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone4))
 end
 
---Zone5
-zone5response= konnected:GET("/device?pin=7");
-fibaro:sleep(1000);
-local zone5= json.decode(zone5response);
-fibaro:debug(zone5[1].state);
-local zone5state = zone5[1].state;
 
-if zone5state == 0 then
-  fibaro:call(thisId, "setProperty", "ui.bedId.value","Closed")
-  fibaro:debug("Zone 5 Bedroom Door is Closed")
-elseif zone5state == 1 then
-  fibaro:call(thisId, "setProperty", "ui.bedId.value","Opened")
-  fibaro:debug("Zone 5 Bedroom Door is Opened")
+--Zone5
+zone5= zoneresponse(ipaddr,port,7);
+if (zone5 == 0 or zone5 == 1) then
+  fibaro:debug("Zone Status:"..zone5)
+  local zone5state = zone5
+  if zone5state == 0 then
+    fibaro:call(thisId, "setProperty", "ui.bedId.value","Closed")
+    fibaro:debug("Zone 5 Bedroom Door is Closed")
+  elseif zone5state == 1 then
+    fibaro:call(thisId, "setProperty", "ui.bedId.value","Opened")
+    fibaro:debug("Zone 5 Bedroom Door is Opened")
+  end
+else
+  fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone5))
 end
 
 --Zone6
-zone6response= konnected:GET("/device?pin=9");
-fibaro:sleep(1000);
-local zone6= json.decode(zone6response);
-fibaro:debug(zone6[1].state);
-local zone6state = zone6[1].state;
-
-if zone6state == 0 then
-  fibaro:call(thisId, "setProperty", "ui.winId.value","Closed")
-  fibaro:debug("Zone 6 WC Window is Closed")
-elseif zone6state == 1 then
-  fibaro:call(thisId, "setProperty", "ui.winId.value","Opened")
-  fibaro:debug("Zone 6 WC Window is Opened")
+zone6= zoneresponse(ipaddr,port,9);
+if (zone6 == 0 or zone6 == 1) then
+  fibaro:debug("Zone Status:"..zone6)
+  local zone6state = zone6
+  if zone6state == 0 then
+    fibaro:call(thisId, "setProperty", "ui.winId.value","Closed")
+    fibaro:debug("Zone 6 Window is Closed")
+  elseif zone6state == 1 then
+    fibaro:call(thisId, "setProperty", "ui.winId.value","Opened")
+    fibaro:debug("Zone 6 Window is Opened")
+  end
+else
+  fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone6))
 end
+
+fibaro:sleep(3000);
