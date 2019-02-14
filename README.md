@@ -1,6 +1,6 @@
 # Konnected-Fibaro
 >
-##Fibaro Konnected Virtual Device
+Fibaro Konnected Virtual Device
 
 This is a [Konnected Parallel Alarm System](https://konnected.io/blogs/news/new-product-konnected-alarm-panel-interface-connects-in-parallel-to-an-existing-wired-alarm-system "Konnected Parallel") integration with Fibaro HC2 smart home appliance.
 
