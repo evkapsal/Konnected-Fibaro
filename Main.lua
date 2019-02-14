@@ -9,22 +9,22 @@ fibaro:log('Device: Running');
 fibaro:debug(os.date("%c"))
 fibaro:call(thisId, "setProperty", "ui.dtime.value", os.date("%c"));
 
+--fibaro:debug("Status"..konnected);
+
 --ZoneResponse Function
 
 function zoneresponse(ipaddr,port,zonenum)
   konnected= Net.FHttp(ipaddr, port)
   reqstr= "/device?pin=" .. zonenum
   response= konnected:GET(tostring(reqstr))
-  while tostring(response) ~= nil
-  do
-    if (response) then
-      zonestate= json.decode(response)
-      fibaro:debug("Pin:" .. zonenum .. ",State:" .. tostring(zonestate[1].state))
-      return zonestate[1].state
-    else
-      fibaro:debug("No Response from Konnected" .. tostring(response))
-      fibaro:sleep(3000)
-    end
+  fibaro:debug("Response:" .. tostring(response))
+  if (pcall(function() return json.decode(response) end)) then
+	zonestate= json.decode(response)
+	fibaro:debug("Pin:" .. zonenum .. ",State:" .. tostring(zonestate[1].state))
+	return zonestate[1].state
+  else
+	fibaro:debug("No Response from Konnected" .. tostring(response))
+	fibaro:sleep(3000)
   end
 end
 	
@@ -44,6 +44,10 @@ if (zone1 == 0 or zone1 == 1) then
 else
   fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone1))
 end
+
+
+
+
 
 
 --Zone 2
@@ -78,6 +82,7 @@ else
 end
 
 
+
 --Zone4
 zone4= zoneresponse(ipaddr,port,6);
 if (zone4 == 0 or zone4 == 1) then 
@@ -93,6 +98,7 @@ if (zone4 == 0 or zone4 == 1) then
 else
   fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone4))
 end
+
 
 
 --Zone5
@@ -111,6 +117,7 @@ else
   fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone5))
 end
 
+
 --Zone6
 zone6= zoneresponse(ipaddr,port,9);
 if (zone6 == 0 or zone6 == 1) then
@@ -127,4 +134,5 @@ else
   fibaro:debug('[ERROR] Invalid JSON:' .. tostring(zone6))
 end
 
-fibaro:sleep(3000);
+
+fibaro:sleep(5000);
